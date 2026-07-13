@@ -1,0 +1,22 @@
+# pyproject.toml for FastAPI backend
+[project]
+name = "college-management-backend"
+version = "0.1.0"
+description = "FastAPI backend for Online College Management System"
+authors = [{name = "Your Name", email = "you@example.com"}]
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi[all]>=0.115.0",
+    "uvicorn[standard]>=0.30.0",
+    "sqlalchemy>=2.0",
+    "alembic>=1.13",
+    "pydantic>=2.6",
+    "python-multipart>=0.0.9",
+    "passlib[bcrypt]>=1.7",
+    "email-validator>=2.1",
+    "fastapi-users[sqlalchemy]>=13.0",
+    "fastapi-mail>=1.4",
+    "stripe>=9.0" 
+]
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "httpx>=0.27"]

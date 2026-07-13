@@ -1,0 +1,39 @@
+# Docker Compose for College Management System
+
+version: "3.9"
+
+services:
+  backend:
+    build: ./backend
+    container_name: cms_backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/cms
+    depends_on:
+      - db
+
+  frontend:
+    build: ./frontend
+    container_name: cms_frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    depends_on:
+      - backend
+
+  db:
+    image: postgres:16-alpine
+    container_name: cms_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: cms
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
