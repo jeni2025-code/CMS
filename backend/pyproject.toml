@@ -16,7 +16,8 @@ dependencies = [
     "email-validator>=2.1",
     "fastapi-users[sqlalchemy]>=13.0",
     "fastapi-mail>=1.4",
-    "stripe>=9.0" 
+    "stripe>=9.0",
+    "python-jose"
 ]
 [project.optional-dependencies]
 dev = ["pytest>=8.0", "httpx>=0.27"]
