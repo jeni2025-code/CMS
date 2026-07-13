@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, insert
 
-from ..dependencies import get_current_active_user
+from .dependencies import get_current_active_user
 from ..schemas import CourseRead, EnrollmentRead, EnrollmentBase, UserRead
 from ..models import User, Course, Enrollment, RoleEnum
 from ..db import get_db
