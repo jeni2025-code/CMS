@@ -12,20 +12,14 @@ RUN apt-get update && \
 # Upgrade pip
 RUN pip install --no-cache-dir --upgrade pip
 
-# Copy dependency manifest (prefer requirements.txt, fallback to pyproject.toml)
-COPY backend/requirements.txt ./
-# If you use pyproject.toml instead, uncomment the line below:
-# COPY backend/pyproject.toml ./
+# Copy dependency manifest
+COPY pyproject.toml ./
 
-# Install Python dependencies
-RUN if [ -f requirements.txt ]; then \
-        pip install --no-cache-dir -r requirements.txt; \
-    else \
-        echo "No requirements.txt found – skipping dependency install"; \
-    fi
+# Install Python dependencies using pip
+RUN pip install --no-cache-dir .
 
 # Copy application source code
-COPY backend/ ./
+COPY . ./
 
 # Expose the port the FastAPI app runs on
 EXPOSE 8000
