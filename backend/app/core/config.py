@@ -1,4 +1,3 @@
-```python
 # backend/app/core/config.py
 
 from pydantic import Field, PostgresDsn
@@ -24,4 +23,4 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
-```
+
