@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, delete
 
-from ..dependencies import get_current_active_user
+from .dependencies import get_current_active_user
 from ..schemas import CourseRead, CourseBase
 from ..models import User, Course, RoleEnum
 from ..db import get_db

@@ -17,7 +17,7 @@ class UserBase(BaseModel):
     is_superuser: bool
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class UserCreate(BaseModel):
     email: EmailStr
@@ -33,7 +33,7 @@ class CourseBase(BaseModel):
     description: Optional[str] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class CourseRead(CourseBase):
     id: int
@@ -43,7 +43,7 @@ class EnrollmentBase(BaseModel):
     grade: Optional[str] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class EnrollmentRead(EnrollmentBase):
     id: int
