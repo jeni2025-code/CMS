@@ -1,48 +1,42 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { API_URL } from './lib/api';
+import { API_URL } from '../lib/api';
 
 const inputStyle: React.CSSProperties = {
   width: '100%', padding: '12px 16px', borderRadius: '10px',
   border: '1px solid rgba(255,255,255,0.15)', background: 'rgba(255,255,255,0.07)',
   color: '#fff', fontSize: '15px', outline: 'none', boxSizing: 'border-box',
-  transition: 'border-color 0.2s',
 };
 const labelStyle: React.CSSProperties = {
   color: 'rgba(255,255,255,0.7)', fontSize: '13px', marginBottom: '6px', display: 'block',
 };
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState('student');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  async function handleLogin(e: React.FormEvent) {
+  async function handleRegister(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError('');
     try {
-      const res = await fetch(`${API_URL}/auth/login`, {
+      const res = await fetch(`${API_URL}/auth/register`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({ username: email, password }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, role }),
       });
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.detail || 'Login failed');
+        throw new Error(data.detail || 'Registration failed');
       }
-      const data = await res.json();
-      localStorage.setItem('token', data.access_token);
-      const payload = JSON.parse(atob(data.access_token.split('.')[1]));
-      const role = payload.role;
-      if (role === 'admin') router.push('/admin');
-      else if (role === 'faculty') router.push('/faculty');
-      else router.push('/student');
+      router.push('/');
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Login failed');
+      setError(err instanceof Error ? err.message : 'Registration failed');
     } finally {
       setLoading(false);
     }
@@ -59,14 +53,14 @@ export default function LoginPage() {
         border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 25px 60px rgba(0,0,0,0.5)',
       }}>
         <div style={{ textAlign: 'center', marginBottom: '36px' }}>
-          <div style={{ fontSize: '52px', marginBottom: '12px' }}>🎓</div>
-          <h1 style={{ color: '#fff', fontSize: '26px', fontWeight: 700, margin: 0 }}>College Management</h1>
+          <div style={{ fontSize: '52px', marginBottom: '12px' }}>📋</div>
+          <h1 style={{ color: '#fff', fontSize: '26px', fontWeight: 700, margin: 0 }}>Create Account</h1>
           <p style={{ color: 'rgba(255,255,255,0.45)', marginTop: '8px', fontSize: '14px' }}>
-            Sign in to continue
+            Join the College Management System
           </p>
         </div>
 
-        <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+        <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
           <div>
             <label style={labelStyle}>Email Address</label>
             <input type="email" required value={email} onChange={e => setEmail(e.target.value)}
@@ -75,7 +69,17 @@ export default function LoginPage() {
           <div>
             <label style={labelStyle}>Password</label>
             <input type="password" required value={password} onChange={e => setPassword(e.target.value)}
-              placeholder="••••••••" style={inputStyle} />
+              placeholder="Min. 8 characters" style={inputStyle} />
+          </div>
+          <div>
+            <label style={labelStyle}>Role</label>
+            <select value={role} onChange={e => setRole(e.target.value)} style={{
+              ...inputStyle, cursor: 'pointer',
+            }}>
+              <option value="student" style={{ background: '#302b63' }}>🎓 Student</option>
+              <option value="faculty" style={{ background: '#302b63' }}>👨‍🏫 Faculty</option>
+              <option value="admin" style={{ background: '#302b63' }}>🛠️ Admin</option>
+            </select>
           </div>
 
           {error && (
@@ -87,17 +91,17 @@ export default function LoginPage() {
 
           <button type="submit" disabled={loading} style={{
             marginTop: '4px', padding: '13px', borderRadius: '12px', border: 'none',
-            background: 'linear-gradient(135deg, #6c63ff, #3b82f6)', color: '#fff',
+            background: 'linear-gradient(135deg, #10b981, #059669)', color: '#fff',
             fontSize: '16px', fontWeight: 600, cursor: loading ? 'not-allowed' : 'pointer',
-            opacity: loading ? 0.7 : 1, transition: 'opacity 0.2s',
+            opacity: loading ? 0.7 : 1,
           }}>
-            {loading ? 'Signing in...' : 'Sign In →'}
+            {loading ? 'Creating account...' : 'Create Account →'}
           </button>
         </form>
 
         <p style={{ textAlign: 'center', marginTop: '28px', color: 'rgba(255,255,255,0.4)', fontSize: '13px' }}>
-          No account?{' '}
-          <a href="/register" style={{ color: '#6c63ff', fontWeight: 600 }}>Register here</a>
+          Already have an account?{' '}
+          <a href="/" style={{ color: '#6c63ff', fontWeight: 600 }}>Sign In</a>
         </p>
       </div>
     </div>
