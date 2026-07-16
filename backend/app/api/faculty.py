@@ -34,20 +34,31 @@ async def create_course(course_in: CourseBase, current_user: User = Depends(ensu
     new_course = Course(name=course_in.name, code=course_in.code, description=course_in.description)
     db.add(new_course)
     await db.flush()  # get new_course.id
-    # associate faculty
-    new_course.faculty_members.append(current_user)
+    
+    from ..models import course_faculty
+    from sqlalchemy import insert
+    await db.execute(insert(course_faculty).values(course_id=new_course.id, faculty_id=current_user.id))
+    
     await db.commit()
     await db.refresh(new_course)
     return new_course
 
 @router.delete("/courses/{course_id}", status_code=204)
 async def delete_course(course_id: int, current_user: User = Depends(ensure_faculty), db: AsyncSession = Depends(get_db)):
-    # Only allow deletion if faculty is associated with the course
     course = await db.get(Course, course_id)
     if not course:
         raise HTTPException(status_code=404, detail="Course not found")
-    if current_user not in course.faculty_members:
+    
+    from ..models import course_faculty
+    result = await db.execute(
+        select(course_faculty).where(
+            course_faculty.c.course_id == course_id, 
+            course_faculty.c.faculty_id == current_user.id
+        )
+    )
+    if not result.first():
         raise HTTPException(status_code=403, detail="Not authorized to delete this course")
+        
     await db.delete(course)
     await db.commit()
     return
