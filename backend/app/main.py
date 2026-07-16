@@ -5,14 +5,21 @@ from fastapi.middleware.cors import CORSMiddleware
 
 # Import routers
 from .api import auth, students, faculty, admin
+from contextlib import asynccontextmanager
+from .db import init_db
 
-app = FastAPI(title="College Management System Backend")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await init_db()
+    yield
+
+app = FastAPI(title="College Management System Backend", lifespan=lifespan)
 
 # CORS setup for frontend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )

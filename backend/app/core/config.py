@@ -15,12 +15,11 @@ class Settings(BaseSettings):
     DEBUG: bool = False
 
     # Database
-    DATABASE_URL: PostgresDsn = Field(...)
+    DATABASE_URL: str = "sqlite+aiosqlite:///./cms.db"
 
     # FastAPI Users
-    SECRET: str = Field(..., min_length=32)
+    SECRET: str = "supersecretfallbackkey1234567890123"
     BACKEND_CORS_ORIGINS: list[str] = ["*"]
-
 
 settings = Settings()
 
